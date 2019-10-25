@@ -1,7 +1,7 @@
 {
 	"name": "TSVueSupport",
 	"displayName": "TSVueSupport",
-	"version": "0.0.1",
+	"version": "0.0.2",
 	"publisher": "someone",
 	"engines": {
 		"vscode": "^1.39.0"
