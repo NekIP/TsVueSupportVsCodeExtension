@@ -3,7 +3,7 @@ import { VueTypescriptVariablesProvider } from "../vue-typescript-file-parsers/V
 import { VueTypescriptFileParser } from "../vue-typescript-file-parsers/VueTypescriptFileParser";
 import { VueHtmlParser } from "../vue-file-parsers/VueHtmlParser";
 import * as vscode from 'vscode';
-import { getWords, CodeWord } from "./CustomDefinitionProviderProvider";
+import { getWords, CodeWord } from "./CustomDefinitionProvider";
 import { Factory } from "../vue-typescript-file-parsers/Factory";
 import { TypescriptClass, CodeElement } from "../vue-typescript-file-parsers/Data";
 import { getDependency } from "./CustomCompletionItemProvider";

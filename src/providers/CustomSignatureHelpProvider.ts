@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
 import { VueHtmlParser } from '../vue-file-parsers/VueHtmlParser';
-import { getWords, CodeWord } from './CustomDefinitionProviderProvider';
+import { getWords, CodeWord } from './CustomDefinitionProvider';
 import { Factory } from '../vue-typescript-file-parsers/Factory';
 import { TypescriptClass, Method } from '../vue-typescript-file-parsers/Data';
 import { getDependency } from './CustomCompletionItemProvider';

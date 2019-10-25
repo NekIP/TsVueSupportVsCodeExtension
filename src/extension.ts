@@ -7,7 +7,7 @@ import * as l from 'lodash';
 import { VueTypescriptSignatureHelpProvider } from './providers/CustomSignatureHelpProvider';
 import { CustomCompletionItemProvider, VueTypescriptCompletionItemProvider, VueLocalizationCompletionItemProvider } from './providers/CustomCompletionItemProvider';
 import { VueTypescriptHoverProvider, VueLocalizationHoverProvider } from './providers/CustomHoverProvider';
-import { VueTypescriptDefinitionProviderProvider, VueLocalizationDefinitionProviderProvider } from './providers/CustomDefinitionProviderProvider';
+import { VueTypescriptDefinitionProvider, VueLocalizationDefinitionProvider } from './providers/CustomDefinitionProvider';
 
 export function activate(context: vscode.ExtensionContext) {
 	let disposable = vscode.commands.registerCommand('extension.tsVueSupport', () => {
@@ -18,15 +18,15 @@ export function activate(context: vscode.ExtensionContext) {
 
 	let vueTypescriptCompletionItemProvider = vscode.languages.registerCompletionItemProvider({ scheme: 'file', language: 'vue' }, new VueTypescriptCompletionItemProvider());
 	let vueTypescriptHoverProvider = vscode.languages.registerHoverProvider({ scheme: 'file', language: 'vue' }, new VueTypescriptHoverProvider());
-	let vueTypescriptDefinitionProviderProvider = vscode.languages.registerDefinitionProvider({ scheme: 'file', language: 'vue' }, new VueTypescriptDefinitionProviderProvider());
+	let vueTypescriptDefinitionProviderProvider = vscode.languages.registerDefinitionProvider({ scheme: 'file', language: 'vue' }, new VueTypescriptDefinitionProvider());
 	let vueTypescriptSignatureHelpProvider = vscode.languages.registerSignatureHelpProvider({ scheme: 'file', language: 'vue' }, new VueTypescriptSignatureHelpProvider(), '(', ',');
 	
 	let vueLocalizationHoverProvider = vscode.languages.registerHoverProvider({ scheme: 'file', language: 'vue' }, new VueLocalizationHoverProvider());
-	let vueLocalizationDefinitionProviderProvider = vscode.languages.registerDefinitionProvider({ scheme: 'file', language: 'vue' }, new VueLocalizationDefinitionProviderProvider());
+	let vueLocalizationDefinitionProviderProvider = vscode.languages.registerDefinitionProvider({ scheme: 'file', language: 'vue' }, new VueLocalizationDefinitionProvider());
 	let vueLocalizationCompletionItemProvider = vscode.languages.registerCompletionItemProvider({ scheme: 'file', language: 'vue' }, new VueLocalizationCompletionItemProvider());
 
 	let vueLocalizationHoverProviderInTs = vscode.languages.registerHoverProvider('typescript', new VueLocalizationHoverProvider());
-	let vueLocalizationDefinitionProviderProviderInTs = vscode.languages.registerDefinitionProvider('typescript', new VueLocalizationDefinitionProviderProvider());
+	let vueLocalizationDefinitionProviderProviderInTs = vscode.languages.registerDefinitionProvider('typescript', new VueLocalizationDefinitionProvider());
 	let vueLocalizationCompletionItemProviderInTs = vscode.languages.registerCompletionItemProvider('typescript', new VueLocalizationCompletionItemProvider());
 
 

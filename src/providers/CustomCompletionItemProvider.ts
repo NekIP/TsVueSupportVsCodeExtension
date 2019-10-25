@@ -4,7 +4,7 @@ import { VueTypescriptFileParser } from "../vue-typescript-file-parsers/VueTypes
 import { VueHtmlParser } from "../vue-file-parsers/VueHtmlParser";
 import * as vscode from 'vscode';
 import { Factory } from "../vue-typescript-file-parsers/Factory";
-import { getWords, CodeWord } from "./CustomDefinitionProviderProvider";
+import { getWords, CodeWord } from "./CustomDefinitionProvider";
 import * as l from 'lodash';
 import { TypescriptClass, CodeElement, TypescriptDependency, TypescriptFile } from "../vue-typescript-file-parsers/Data";
 import { matchAll } from "../vue-typescript-file-parsers/VueTypescriptMethodsProvider";

@@ -9,7 +9,7 @@ import { TypescriptClass } from "../vue-typescript-file-parsers/Data";
 import { getDependency } from "./CustomCompletionItemProvider";
 import { Localization } from "../localization-file-parsers/LocalizationFIleParser";
 
-export class VueTypescriptDefinitionProviderProvider implements vscode.DefinitionProvider {
+export class VueTypescriptDefinitionProvider implements vscode.DefinitionProvider {
 	provideDefinition(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken): vscode.ProviderResult<vscode.Location | vscode.Location[] | vscode.LocationLink[]> {
 		let vueFileContent = document.getText();
 		let typescriptFileContent = new VueHtmlParser(vueFileContent, document.fileName).getConnectedTypescriptFile();
@@ -55,7 +55,7 @@ export class VueTypescriptDefinitionProviderProvider implements vscode.Definitio
 	}
 }
 
-export class VueLocalizationDefinitionProviderProvider implements vscode.DefinitionProvider {
+export class VueLocalizationDefinitionProvider implements vscode.DefinitionProvider {
 	provideDefinition(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken): vscode.ProviderResult<vscode.Location | vscode.Location[] | vscode.LocationLink[]> {
 		let vueFileContent = document.getText();
 		let localizationFilePath = document.fileName.replace('.ts', '.localization').replace('.vue', '.localization');
