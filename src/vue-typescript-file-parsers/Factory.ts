@@ -4,6 +4,7 @@ import { VueTypescriptInputPropsProvider } from "./VueTypescriptInputPropsProvid
 import { VueTypescriptPropertiesProvider } from "./VueTypescriptPropertiesProvider";
 import { VueTypescriptVariablesProvider } from "./VueTypescriptVariablesProvider";
 import { VueTypescriptMetaInformationProvider, VueTypescriptFileParser1 } from "./VueTypescriptFileParser";
+import { LocalizationFileParser } from "../localization-file-parsers/LocalizationFIleParser";
 
 
 export class Factory {
@@ -12,7 +13,8 @@ export class Factory {
 	public static packageConfigManager: PackageConfigManager = new PackageConfigManager(Factory.configsFileProvider);
 	public static typescriptConfigManager: TypescriptConfigManager = new TypescriptConfigManager(Factory.configsFileProvider);
 	public static fileManager: FileManager = new FileManager(Factory.typescriptConfigManager, Factory.pathProvider);
-	
+	public static localizationFileParser: LocalizationFileParser = new LocalizationFileParser();
+
 	public static vueTypescriptDependenciesProvider: VueTypescriptDependenciesProvider = new VueTypescriptDependenciesProvider(Factory.packageConfigManager, Factory.fileManager);
 	public static vueTypescriptMethodsProvider: VueTypescriptMethodsProvider = new VueTypescriptMethodsProvider();
 	public static vueTypescriptInputPropsProvider: VueTypescriptInputPropsProvider = new VueTypescriptInputPropsProvider();

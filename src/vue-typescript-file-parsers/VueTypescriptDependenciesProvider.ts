@@ -112,7 +112,7 @@ export class FileManager {
 	}
 
 	private fixFileExtension(path: string) {
-		if (path && !path.endsWith('.ts') && !path.endsWith('.js') && !path.endsWith('.vue')) {
+		if (path && !path.endsWith('.ts') && !path.endsWith('.js') && !path.endsWith('.vue') && !path.endsWith('.localization')) {
 			return path + '.ts';
 		}
 

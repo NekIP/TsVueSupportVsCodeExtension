@@ -7,6 +7,7 @@ import { Factory } from "../vue-typescript-file-parsers/Factory";
 import * as l from 'lodash';
 import { TypescriptClass } from "../vue-typescript-file-parsers/Data";
 import { getDependency } from "./CustomCompletionItemProvider";
+import { Localization } from "../localization-file-parsers/LocalizationFIleParser";
 
 export class VueTypescriptDefinitionProviderProvider implements vscode.DefinitionProvider {
 	provideDefinition(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken): vscode.ProviderResult<vscode.Location | vscode.Location[] | vscode.LocationLink[]> {
@@ -51,51 +52,44 @@ export class VueTypescriptDefinitionProviderProvider implements vscode.Definitio
 				targetSelectionRange: targetRange
 			} as vscode.LocationLink]);
 		});
-		
-		/*let typescriptFileContent = new VueHtmlParser(document.getText(), document.fileName).getConnectedTypescriptFile();
-		let typescriptFilePath = new VueHtmlParser(document.getText(), document.fileName).getTypescriptFilePath();
-		if (!typescriptFileContent) {
+	}
+}
+
+export class VueLocalizationDefinitionProviderProvider implements vscode.DefinitionProvider {
+	provideDefinition(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken): vscode.ProviderResult<vscode.Location | vscode.Location[] | vscode.LocationLink[]> {
+		let vueFileContent = document.getText();
+		let localizationFilePath = document.fileName.replace('.ts', '.localization').replace('.vue', '.localization');
+		let localizationFileContent = Factory.fileManager.getFile(localizationFilePath);
+		if (!localizationFileContent) {
 			return;
 		}
-		
-		let class_ = Factory.vueTypescriptParser.parse(typescriptFileContent, typescriptFilePath || '');
 
-		let filePath = new VueHtmlParser(document.getText(), document.fileName).getTypescriptFilePath();
-		let text = document.getText();
-		let line = text.split('\n')[position.line];
-		let variableName = this.getWord(line, position.character);
-		let variables = new VueTypescriptVariablesProvider().list(typescriptFileContent, typescriptFileContent);
-		let variable = variables.filter(x => x.name == variableName.word)[0];
-		if (variable) {
-			if (variable.line >= 0 && variable.startPosition >= 0 && variable.endPosition >= 0) {
-				return new Promise<vscode.LocationLink[]>(resolve => {
-					resolve([{
-						targetUri: vscode.Uri.file(filePath as string),
-						originSelectionRange: new vscode.Range(position.line, variableName.startIndex, position.line, variableName.endIndex),
-						targetRange: new vscode.Range(variable.line, variable.startPosition, variable.line, variable.endPosition),
-						targetSelectionRange: new vscode.Range(variable.line, variable.startPosition, variable.line, variable.endPosition)
-					} as vscode.LocationLink]);
-				});
-			}
-		}*/
-	}
+		let line = vueFileContent.split('\n')[position.line];
+		let words = getWords(line, position.character);
+		let lastWord = l(words).last() as CodeWord;
+		let matches = matchAll(line, /\$t\ *\(('|")(\w+)('|")/gm)
+			.filter(x => x.groups[2] == lastWord.name);
+		if (matches.length == 0) {
+			return;
+		}
 
-	private getWord(line: string, cursorPosition: number): {
-		word: string;
-		startIndex: number;
-		endIndex: number;
-	} {
-		let part1 = line.substring(0, cursorPosition);
-		let part2 = line.substring(cursorPosition);
-		let search1 = /\b(\w+)\b$/gm.exec(part1);
-		let search2 = /^\b(\w+)\b/gm.exec(part2);
-		part1 = (search1 || [''])[1];
-		part2 = (search2 || [''])[1];
-		return {
-			word: part1 + part2,
-			startIndex: cursorPosition - part1.length,
-			endIndex: cursorPosition + part2.length
-		};
+		let localizations = Factory.localizationFileParser.parse(localizationFileContent);
+		let localization = l(localizations.filter(x => x.key == lastWord.name)).first() as Localization;
+		if (!localization) {
+			return;
+		}
+
+		let originRange: vscode.Range = new vscode.Range(position.line, lastWord.startIndex, position.line, lastWord.endIndex);
+		let targetRange: vscode.Range = new vscode.Range(localization.line, 0, localization.line, localization.key.length);
+
+		return new Promise<vscode.LocationLink[]>(resolve => {
+			resolve([{
+				targetUri: vscode.Uri.file(localizationFilePath as string),
+				originSelectionRange: originRange,
+				targetRange: targetRange,
+				targetSelectionRange: targetRange
+			} as vscode.LocationLink]);
+		});
 	}
 }
 

@@ -7,6 +7,7 @@ import { Factory } from "../vue-typescript-file-parsers/Factory";
 import { getWords, CodeWord } from "./CustomDefinitionProviderProvider";
 import * as l from 'lodash';
 import { TypescriptClass, CodeElement, TypescriptDependency, TypescriptFile } from "../vue-typescript-file-parsers/Data";
+import { matchAll } from "../vue-typescript-file-parsers/VueTypescriptMethodsProvider";
 
 export class CustomCompletionItemProvider implements vscode.CompletionItemProvider {
 	provideCompletionItems(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken, context: vscode.CompletionContext): vscode.ProviderResult<vscode.CompletionItem[] | vscode.CompletionList> {
@@ -51,6 +52,41 @@ export class VueTypescriptCompletionItemProvider implements vscode.CompletionIte
 			...x.properties.map(y => y.mapToCompletionItem(x.name)),
 			...x.inputProps.map(y => y.mapToCompletionItem(x.name))
 		]).flatten().value();
+
+		return new Promise<vscode.CompletionItem[]>(resolve => {
+			resolve(completionItems);
+		});
+	}
+}
+
+export class VueLocalizationCompletionItemProvider implements vscode.CompletionItemProvider {
+	provideCompletionItems(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken, context: vscode.CompletionContext): vscode.ProviderResult<vscode.CompletionItem[] | vscode.CompletionList> {
+		let vueFileContent = document.getText();
+		let localizationFilePath = document.fileName.replace('.ts', '.localization').replace('.vue', '.localization');
+		let localizationFileContent = Factory.fileManager.getFile(localizationFilePath);
+		if (!localizationFileContent) {
+			return;
+		}
+
+		let line = vueFileContent.split('\n')[position.line];
+		let words = getWords(line, position.character);
+		let lastWord = l(words).last() as CodeWord;
+		let matches = matchAll(line, /\$t\ *\(('|"|)(\w+)('|"|)/gm)
+			.filter(x => x.groups[2] == lastWord.name);
+		if (matches.length == 0) {
+			return;
+		}
+
+		let localizations = Factory.localizationFileParser.parse(localizationFileContent);
+
+		let completionItems: vscode.CompletionItem[] = [];
+		completionItems = l(localizations).map(x => {
+			let result = new vscode.CompletionItem(x.key, vscode.CompletionItemKind.Constant);
+			let translations = x.translations.map(y => `\t${y.language}\t${y.value}`).join('\n');
+			result.detail = `(localization) ${x.key}\n${translations}`;
+			result.insertText = `'${x.key}'`;
+			return result;
+		}).value();
 
 		return new Promise<vscode.CompletionItem[]>(resolve => {
 			resolve(completionItems);
